@@ -158,12 +158,12 @@ def get_scn_pyramids(
         )
 
         pixels_node: ET.Element = image_node.find(f".//{NS_SCN}pixels")
-        pixel_size = PointF(
+        image_size = PointF(
             x=str2int(pixels_node.get("sizeX")), y=str2int(pixels_node.get("sizeY"))
         )
 
         # could override `__div__` in `Point` class... this only appears once though
-        mpp = PointF(x=physical_size.x / pixel_size.x, y=physical_size.y / pixel_size.y)
+        mpp = PointF(x=physical_size.x / image_size.x, y=physical_size.y / image_size.y)
 
         store: ZarrTiffStore = next(s for s in series if s.name == name).aszarr()
         group: Group = zarr.open(store, mode="r")
