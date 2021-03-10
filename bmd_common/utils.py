@@ -17,7 +17,11 @@ def is_dir_empty(path: Path) -> bool:
 
 
 def cprofile(
-    msg: str = None, *, sort_by: str = "cumtime", n_lines: int = 10
+    msg: str = None,
+    *,
+    sort_by: str = "tottime",
+    n_lines: int = 10,
+    filename: Path = None,
 ) -> Callable:
     """
     A simple decorator for seeing how long something takes.
@@ -60,7 +64,14 @@ def cprofile(
                 pr.disable()
                 if msg:
                     print(msg)
-                pstats.Stats(pr).strip_dirs().sort_stats(sort_by).print_stats(n_lines)
+                ps = (
+                    pstats.Stats(pr)
+                    .strip_dirs()
+                    .sort_stats(sort_by)
+                    .print_stats(n_lines)
+                )
+                if filename is not None:
+                    ps.dump_stats(filename)
 
         return inner
 
